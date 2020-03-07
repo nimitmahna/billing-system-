@@ -6,10 +6,16 @@
 #include<cstdio>
 #include<cstdlib>
 #include<iomanip>
+
 using namespace std;
 //global variable declaration
 int k=7,r=0,flag=0;
 COORD coord = {0, 0};
+void SetColor(int value){
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),  value);
+}
+ 
+
 
 void gotoxy(int x, int y)
 {
@@ -34,6 +40,7 @@ class item
 public:
     void add()
     {
+         SetColor(11);
         cout<<"\n\n\tItem No: ";
         cin>>itemno;
         cout<<"\n\n\tName of the item: ";
@@ -44,6 +51,7 @@ public:
     }
     void show()
     {
+         SetColor(11);
         cout<<"\n\tItem No: ";
         cout<<itemno;
         cout<<"\n\n\tName of the item: ";
@@ -53,6 +61,7 @@ public:
     }
     void report()
     {
+         SetColor(11);
         gotoxy(3,k);
         cout<<itemno;
         gotoxy(13,k);
@@ -84,6 +93,7 @@ public:
 void amount::add()
 {
     item::add();
+     SetColor(11);
     cout<<"\n\n\tPrice: ";
     cin>>price;
     cout<<"\n\n\tQuantity: ";
@@ -104,6 +114,7 @@ void amount::calculate()
 void amount::show()
 {
     fin.open("itemstore.dat",ios::binary);
+     SetColor(11);
     fin.read((char*)&amt,sizeof(amt));
     item::show();
     cout<<"\n\n\tNet amount: ";
@@ -128,6 +139,7 @@ void amount::report()
     if(k==50)
     {
         gotoxy(25,50);
+         SetColor(11);
         cout<<"PRESS ANY KEY TO CONTINUE...";
         getch();
         k=7;
@@ -154,6 +166,7 @@ void amount::report()
 void amount::pay()
 {
     show();
+     SetColor(11);
     cout<<"\n\n\n\t\t*********************************************";
     cout<<"\n\t\t                 DETAILS                  ";
     cout<<"\n\t\t*********************************************";
@@ -165,18 +178,29 @@ void amount::pay()
     cout<<"\n\t\t*********************************************";
 }
 
+
+
+
 int main()
 {
+    
+    
     cout.setf(ios::fixed);
     cout.setf(ios::showpoint);
     cout<<setprecision(2);
     fstream tmp("temp.dat",ios::binary|ios::out);
 menu:
     system("cls");
+    gotoxy(25,1);
+    SetColor(8);
+    cout<<" ==============================\n\n";
     gotoxy(25,2);
-    cout<<"Super Market Billing ";
+    SetColor(13);
+    cout<<"| Super Market Billing System  |";
     gotoxy(25,3);
-    cout<<"===========================\n\n";
+    SetColor(8);
+    cout<<" ==============================\n\n";
+     SetColor(11);
     cout<<"\n\t\t1.Bill Report\n\n";
     cout<<"\t\t2.Add/Remove/Edit Item\n\n";
     cout<<"\t\t3.Show Item Details\n\n";
@@ -190,10 +214,16 @@ menu:
     case 1:
 ss:
         system("cls");
+        gotoxy(25,1);
+         SetColor(8);
+        cout<<"==================\n\n";
         gotoxy(25,2);
-        cout<<"Bill Details";
+         SetColor(13);
+        cout<<" | Bill Details |";
         gotoxy(25,3);
-        cout<<"================\n\n";
+         SetColor(8);
+        cout<<"==================\n\n";
+        SetColor(11);
         cout<<"\n\t\t1.All Items\n\n";
         cout<<"\t\t2.Back to Main menu\n\n";
         cout<<"\t\tPlease Enter Required Option: ";
@@ -250,10 +280,16 @@ ss:
     case 2:
 db:
         system("cls");
-        gotoxy(25,2);
-        cout<<"Bill Editor";
-        gotoxy(25,3);
+        gotoxy(25,1);
+         SetColor(8);
         cout<<"=================\n\n";
+        gotoxy(25,2);
+         SetColor(13);
+        cout<<"|  Bill Editor  |";
+        gotoxy(25,3);
+         SetColor(8);
+        cout<<"=================\n\n";
+         SetColor(11);
         cout<<"\n\t\t1.Add Item Details\n\n";
         cout<<"\t\t2.Edit Item Details\n\n";
         cout<<"\t\t3.Delete Item Details\n\n";
@@ -272,7 +308,7 @@ db:
         case 2:
             int ino;
             flag=0;
-            cout<<"\n\n\tEnter Item Number to be Edited :";
+            cout<<"\n\n\tEnter Item ID to be Edited :";
             cin>>ino;
             fin.open("itemstore.dat",ios::binary);
             fout.open("itemstore.dat",ios::binary|ios::app);
@@ -294,6 +330,7 @@ db:
                         flag=1;
                         fout.seekp(r*sizeof(amt));
                         system("cls");
+                         SetColor(11);
                         cout<<"\n\t\tCurrent Details are\n";
                         amt.show();
                         cout<<"\n\n\t\tEnter New Details\n";
@@ -305,6 +342,7 @@ db:
             }
             if(flag==0)
             {
+                 SetColor(11);
                 cout<<"\n\t\tItem No does not exist...Please Retry!";
                 getch();
                 goto db;
@@ -315,7 +353,8 @@ db:
 
         case 3:
             flag=0;
-            cout<<"\n\n\tEnter Item Number to be deleted :";
+             SetColor(11);
+            cout<<"\n\n\tEnter Item ID to be Removed :";
             cin>>ino;
             fin.open("itemstore.dat",ios::binary);
             if(!fin)
@@ -349,15 +388,18 @@ db:
                 fout.write((char*)&amt,sizeof(amt));
             tmp.close();
             fout.close();
-            if(flag==1)
-                cout<<"\n\t\tItem Succesfully Deleted";
-            else if (flag==0)
-                cout<<"\n\t\tItem does not Exist! Please Retry";
+            if(flag==1){
+             SetColor(11);
+                cout<<"\n\t\tItem Succesfully Removed";}
+            else if (flag==0){
+             SetColor(12);
+                cout<<"\n\t\tItem does not Exist! Please Retry";}
             getch();
             goto db;
         case 4:
             goto menu;
         default:
+         SetColor(12);
             cout<<"\n\n\t\tWrong Choice!!! Retry";
             getch();
             goto db;
@@ -366,11 +408,13 @@ db:
         system("cls");
         flag=0;
         int ino;
-        cout<<"\n\n\t\tEnter Item Number :";
+         SetColor(11);
+        cout<<"\n\n\t\tEnter Item ID :";
         cin>>ino;
         fin.open("itemstore.dat",ios::binary);
         if(!fin)
         {
+             SetColor(12);
             cout<<"\n\nFile Not Found...\nProgram Terminated!";
             goto menu;
         }
@@ -386,6 +430,7 @@ db:
             }
         }
         if(flag==0)
+         SetColor(12);
             cout<<"\n\t\tItem does not exist....Please Retry!";
         getch();
         fin.close();
@@ -393,6 +438,7 @@ db:
     case 4:
         system("cls");
         gotoxy(20,20);
+         SetColor(11);
         cout<<"ARE YOU SURE, YOU WANT TO EXIT (Y/N)?";
         char yn;
         cin>>yn;
@@ -400,7 +446,8 @@ db:
         {
             gotoxy(12,20);
             system("cls");
-            cout<<"************************** THANKS **************************************";
+             SetColor(10);
+            cout<<"************************** THANKS FOR SHOPPING **************************************";
             getch();
             exit(0);
         }
@@ -411,6 +458,7 @@ db:
             goto menu;
         }
     default:
+     SetColor(8);
         cout<<"\n\n\t\tWrong Choice....Please Retry!";
         getch();
         goto menu;
