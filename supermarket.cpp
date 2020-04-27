@@ -9,14 +9,14 @@
 
 using namespace std;
 //global variable declaration
-int k=7,r=0,flag=0;
-COORD coord = {0, 0};
-void SetColor(int value){
-    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),  value);
+int k = 7, r = 0, flag = 0;
+COORD coord = { 0, 0 };
+//for textcolour (copied from stack overflow)
+void SetColor(int value) {
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), value);
 }
- 
 
-
+//for manipulating coordinates on output screen
 void gotoxy(int x, int y)
 {
     COORD coord;
@@ -24,9 +24,19 @@ void gotoxy(int x, int y)
     coord.Y = y;
     SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
 }
+//footer for program
+void footer()
+{
+    cout<<"\n\n\n";
+    cout<<"             *   *   \n";
+    cout<<"MADE With   *  *  *    By: SK, NM, MS\n";
+    cout<<"             *   *        \n";
+    cout<<"               * \n";
+
+}
 struct date
 {
-    int mm,dd,yy;
+    int mm, dd, yy;
 };
 
 ofstream fout;
@@ -40,31 +50,31 @@ class item
 public:
     void add()
     {
-         SetColor(11);
-        cout<<"\n\n\tItem No: ";
-        cin>>itemno;
-        cout<<"\n\n\tName of the item: ";
-        cin>>name;
-//gets(name);
-        cout<<"\n\n\tManufacturing Date(dd-mm-yy): ";
-        cin>>d.mm>>d.dd>>d.yy;
+        SetColor(11);
+        cout << "\n\n\tItem No: ";
+        cin >> itemno;
+        cout << "\n\n\tName of the item: ";
+        cin >> name;
+        //gets(name);
+        cout << "\n\n\tManufacturing Date(dd-mm-yy): ";
+        cin >> d.mm >> d.dd >> d.yy;
     }
     void show()
     {
-         SetColor(11);
-        cout<<"\n\tItem No: ";
-        cout<<itemno;
-        cout<<"\n\n\tName of the item: ";
-        cout<<name;
-        cout<<"\n\n\tDate : ";
-        cout<<d.mm<<"-"<<d.dd<<"-"<<d.yy;
+        SetColor(11);
+        cout << "\n\tItem No: ";
+        cout << itemno;
+        cout << "\n\n\tName of the item: ";
+        cout << name;
+        cout << "\n\n\tDate : ";
+        cout << d.mm << "-" << d.dd << "-" << d.yy;
     }
     void report()
     {
-         SetColor(11);
-        gotoxy(3,k);
-        cout<<itemno;
-        gotoxy(13,k);
+        SetColor(11);
+        gotoxy(3, k);
+        cout << itemno;
+        gotoxy(13, k);
         puts(name);
     }
     int retno()
@@ -75,9 +85,9 @@ public:
 
 };
 
-class amount: public item
+class amount : public item
 {
-    float price,qty,tax,gross,dis,netamt;
+    float price, qty, tax, gross, dis, net_amt;
 public:
     void add();
     void show();
@@ -86,96 +96,96 @@ public:
     void pay();
     float retnetamt()
     {
-        return(netamt);
+        return(net_amt);
     }
 } amt;
 
 void amount::add()
 {
     item::add();
-     SetColor(11);
-    cout<<"\n\n\tPrice: ";
-    cin>>price;
-    cout<<"\n\n\tQuantity: ";
-    cin>>qty;
-    cout<<"\n\n\tTax percent: ";
-    cin>>tax;
-    cout<<"\n\n\tDiscount percent: ";
-    cin>>dis;
+    SetColor(11);
+    cout << "\n\n\tPrice: ";
+    cin >> price;
+    cout << "\n\n\tQuantity: ";
+    cin >> qty;
+    cout << "\n\n\tTax percent: ";
+    cin >> tax;
+    cout << "\n\n\tDiscount percent: ";
+    cin >> dis;
     calculate();
-    fout.write((char *)&amt,sizeof(amt));
+    fout.write((char*)&amt, sizeof(amt));
     fout.close();
 }
 void amount::calculate()
 {
-    gross=price+(price*(tax/100));
-    netamt=qty*(gross-(gross*(dis/100)));
+    gross = price + (price * (tax / 100));
+    net_amt = qty * (gross - (gross * (dis / 100)));
 }
 void amount::show()
 {
-    fin.open("itemstore.dat",ios::binary);
-     SetColor(11);
-    fin.read((char*)&amt,sizeof(amt));
+    fin.open("itemstore.dat", ios::binary);
+    SetColor(11);
+    fin.read((char*)&amt, sizeof(amt));
     item::show();
-    cout<<"\n\n\tNet amount: ";
-    cout<<netamt;
+    cout << "\n\n\tNet amount: ";
+    cout << net_amt;
     fin.close();
 }
 
 void amount::report()
 {
     item::report();
-    gotoxy(23,k);
-    cout<<price;
-    gotoxy(33,k);
-    cout<<qty;
-    gotoxy(44,k);
-    cout<<tax;
-    gotoxy(52,k);
-    cout<<dis;
-    gotoxy(64,k);
-    cout<<netamt;
-    k=k+1;
-    if(k==50)
+    gotoxy(23, k);
+    cout << price;
+    gotoxy(33, k);
+    cout << qty;
+    gotoxy(44, k);
+    cout << tax;
+    gotoxy(52, k);
+    cout << dis;
+    gotoxy(64, k);
+    cout << net_amt;
+    k = k + 1;
+    if (k == 50)
     {
-        gotoxy(25,50);
-         SetColor(11);
-        cout<<"PRESS ANY KEY TO CONTINUE...";
+        gotoxy(25, 50);
+        SetColor(11);
+        cout << "PRESS ANY KEY TO CONTINUE...";
         getch();
-        k=7;
+        k = 7;
         system("cls");
-        gotoxy(30,3);
-        cout<<" ITEM DETAILS ";
-        gotoxy(3,5);
-        cout<<"NUMBER";
-        gotoxy(13,5);
-        cout<<"NAME";
-        gotoxy(23,5);
-        cout<<"PRICE";
-        gotoxy(33,5);
-        cout<<"QUANTITY";
-        gotoxy(44,5);
-        cout<<"TAX";
-        gotoxy(52,5);
-        cout<<"DEDUCTION";
-        gotoxy(64,5);
-        cout<<"NET AMOUNT";
+        gotoxy(30, 3);
+        cout << " ITEM DETAILS ";
+        gotoxy(3, 5);
+        cout << "NUMBER";
+        gotoxy(13, 5);
+        cout << "NAME";
+        gotoxy(23, 5);
+        cout << "PRICE";
+        gotoxy(33, 5);
+        cout << "QUANTITY";
+        gotoxy(44, 5);
+        cout << "TAX";
+        gotoxy(52, 5);
+        cout << "DEDUCTION";
+        gotoxy(64, 5);
+        cout << "NET AMOUNT";
     }
 }
 
 void amount::pay()
 {
     show();
-     SetColor(11);
-    cout<<"\n\n\n\t\t*********************************************";
-    cout<<"\n\t\t                 DETAILS                  ";
-    cout<<"\n\t\t*********************************************";
-    cout<<"\n\n\t\tPRICE                     :"<<price;
-    cout<<"\n\n\t\tQUANTITY                  :"<<qty;
-    cout<<"\n\t\tTAX PERCENTAGE              :"<<tax;
-    cout<<"\n\t\tDISCOUNT PERCENTAGE         :"<<dis;
-    cout<<"\n\n\n\t\tNET AMOUNT              :Rs."<<netamt;
-    cout<<"\n\t\t*********************************************";
+    SetColor(11);
+    cout << "\n\n\n\t\t*********************************************";
+    cout << "\n\t\t                 DETAILS                  ";
+    cout << "\n\t\t*********************************************";
+    cout << "\n\n\t\tPRICE                     :" << price;
+    cout << "\n\n\t\tQUANTITY                  :" << qty;
+    cout << "\n\t\tTAX PERCENTAGE              :" << tax;
+    cout << "\n\t\tDISCOUNT PERCENTAGE         :" << dis;
+    cout << "\n\n\n\t\tNET AMOUNT              :Rs." << net_amt;
+    cout << "\n\t\t*********************************************";
 }
 
 
@@ -183,167 +193,171 @@ void amount::pay()
 
 int main()
 {
-    
-    
+
+
     cout.setf(ios::fixed);
     cout.setf(ios::showpoint);
-    cout<<setprecision(2);
-    fstream tmp("temp.dat",ios::binary|ios::out);
+    cout << setprecision(2);
+    fstream tmp("temp.dat", ios::binary | ios::out);
 menu:
     system("cls");
-    gotoxy(25,1);
+    gotoxy(25, 1);
     SetColor(8);
-    cout<<" ==============================\n\n";
-    gotoxy(25,2);
+    cout << " ==============================\n\n";
+    gotoxy(25, 2);
     SetColor(13);
-    cout<<"| Super Market Billing System  |";
-    gotoxy(25,3);
+    cout << "| Super Market Billing System  |";
+    gotoxy(25, 3);
     SetColor(8);
-    cout<<" ==============================\n\n";
-     SetColor(11);
-    cout<<"\n\t\t1.Bill Report\n\n";
-    cout<<"\t\t2.Add/Remove/Edit Item\n\n";
-    cout<<"\t\t3.Show Item Details\n\n";
-    cout<<"\t\t4.Exit\n\n";
-    cout<<"\t\tPlease Enter Required Option: ";
-    int ch,ff;
+    cout << " ==============================\n\n";
+    SetColor(11);
+    cout << "\n\t\t1.Bill Report\n\n";
+    cout << "\t\t2.Add/Remove/Edit Item\n\n";
+    cout << "\t\t3.Show Item Details\n\n";
+    cout << "\t\t4.Exit\n\n";
+    cout << "\t\tPlease Enter Required Option: ";
+    int ch, ff;
     float gtotal;
-    cin>>ch;
-    switch(ch)
+    cin >> ch;
+    switch (ch)
     {
     case 1:
-ss:
+    ss:
         system("cls");
-        gotoxy(25,1);
-         SetColor(8);
-        cout<<"==================\n\n";
-        gotoxy(25,2);
-         SetColor(13);
-        cout<<" | Bill Details |";
-        gotoxy(25,3);
-         SetColor(8);
-        cout<<"==================\n\n";
+        gotoxy(25, 1);
+        SetColor(8);
+        cout << "==================\n\n";
+        gotoxy(25, 2);
+        SetColor(13);
+        cout << " | Bill Details |";
+        gotoxy(25, 3);
+        SetColor(8);
+        cout << "==================\n\n";
         SetColor(11);
-        cout<<"\n\t\t1.All Items\n\n";
-        cout<<"\t\t2.Back to Main menu\n\n";
-        cout<<"\t\tPlease Enter Required Option: ";
+        cout << "\n\t\t1.All Items\n\n";
+        cout << "\t\t2.Back to Main menu\n\n";
+        cout << "\t\tPlease Enter Required Option: ";
         int cho;
-        cin>>cho;
-        if(cho==1)
+        cin >> cho;
+        if (cho == 1)
         {
             system("cls");
-            gotoxy(30,3);
-            cout<<" BILL DETAILS ";
-            gotoxy(3,5);
-            cout<<"ITEM NO";
-            gotoxy(13,5);
-            cout<<"NAME";
-            gotoxy(23,5);
-            cout<<"PRICE";
-            gotoxy(33,5);
-            cout<<"QUANTITY";
-            gotoxy(44,5);
-            cout<<"TAX %";
-            gotoxy(52,5);
-            cout<<"DISCOUNT %";
-            gotoxy(64,5);
-            cout<<"NET AMOUNT";
-            fin.open("itemstore.dat",ios::binary);
-            if(!fin)
+            gotoxy(30, 3);
+            cout << " BILL DETAILS ";
+            gotoxy(3, 5);
+            cout << "ITEM NO";
+            gotoxy(13, 5);
+            cout << "NAME";
+            gotoxy(23, 5);
+            cout << "PRICE";
+            gotoxy(33, 5);
+            cout << "QUANTITY";
+            gotoxy(44, 5);
+            cout << "TAX %";
+            gotoxy(52, 5);
+            cout << "DISCOUNT %";
+            gotoxy(64, 5);
+            cout << "NET AMOUNT";
+            fin.open("itemstore.dat", ios::binary);
+            if (!fin)
             {
-                cout<<"\n\nFile Not Found...";
+                cout << "\n\nFile Not Found...";
                 goto menu;
             }
             fin.seekg(0);
-            gtotal=0;
-            while(!fin.eof())
+            gtotal = 0;
+            while (!fin.eof())
             {
-                fin.read((char*)&amt,sizeof(amt));
-                if(!fin.eof())
+                fin.read((char*)&amt, sizeof(amt));
+                if (!fin.eof())
                 {
                     amt.report();
-                    gtotal+=amt.retnetamt();
-                    ff=0;
+                    gtotal += amt.retnetamt();
+                    ff = 0;
                 }
-                if(ff!=0) gtotal=0;
+                if (ff != 0) gtotal = 0;
             }
-            gotoxy(17,k);
-            cout<<"\n\n\n\t\t\tGrand Total="<<gtotal;
+            gotoxy(17, k);
+            cout << "\n\n\n\t\t\tGrand Total=" << gtotal;
+
+            cout<<"\n\n\n";
+            footer();
             getch();
             fin.close();
         }
-        if(cho==2)
+        if (cho == 2)
         {
             goto menu;
         }
         goto ss;
     case 2:
-db:
+    db:
         system("cls");
-        gotoxy(25,1);
-         SetColor(8);
-        cout<<"=================\n\n";
-        gotoxy(25,2);
-         SetColor(13);
-        cout<<"|  Bill Editor  |";
-        gotoxy(25,3);
-         SetColor(8);
-        cout<<"=================\n\n";
-         SetColor(11);
-        cout<<"\n\t\t1.Add Item Details\n\n";
-        cout<<"\t\t2.Edit Item Details\n\n";
-        cout<<"\t\t3.Delete Item Details\n\n";
-        cout<<"\t\t4.Back to Main Menu ";
+        gotoxy(25, 1);
+        SetColor(8);
+        cout << "=================\n\n";
+        gotoxy(25, 2);
+        SetColor(13);
+        cout << "|  Bill Editor  |";
+        gotoxy(25, 3);
+        SetColor(8);
+        cout << "=================\n\n";
+        SetColor(11);
+        cout << "\n\t\t1.Add Item Details\n\n";
+        cout << "\t\t2.Edit Item Details\n\n";
+        cout << "\t\t3.Delete Item Details\n\n";
+        cout << "\t\t4.Back to Main Menu ";
         int apc;
-        cin>>apc;
-        switch(apc)
+        cin >> apc;
+        switch (apc)
         {
         case 1:
-            fout.open("itemstore.dat",ios::binary|ios::app);
+            fout.open("itemstore.dat", ios::binary | ios::app);
             amt.add();
-            cout<<"\n\t\tItem Added Successfully!";
+            cout << "\n\t\tItem Added Successfully!";
             getch();
             goto db;
 
         case 2:
             int ino;
-            flag=0;
-            cout<<"\n\n\tEnter Item ID to be Edited :";
-            cin>>ino;
-            fin.open("itemstore.dat",ios::binary);
-            fout.open("itemstore.dat",ios::binary|ios::app);
-            if(!fin)
+            flag = 0;
+            cout << "\n\n\tEnter Item ID to be Edited :";
+            cin >> ino;
+            fin.open("itemstore.dat", ios::binary);
+            fout.open("itemstore.dat", ios::binary | ios::app);
+            if (!fin)
             {
-                cout<<"\n\nFile Not Found...";
+                cout << "\n\nFile Not Found...";
                 goto menu;
             }
             fin.seekg(0);
-            r=0;
-            while(!fin.eof())
+            r = 0;
+            while (!fin.eof())
             {
-                fin.read((char*)&amt,sizeof(amt));
-                if(!fin.eof())
+                fin.read((char*)&amt, sizeof(amt));
+                if (!fin.eof())
                 {
-                    int x=amt.item::retno();
-                    if(x==ino)
+                    int x = amt.item::retno();
+                    if (x == ino)
                     {
-                        flag=1;
-                        fout.seekp(r*sizeof(amt));
+                        flag = 1;
+                        fout.seekp(r * sizeof(amt));
                         system("cls");
-                         SetColor(11);
-                        cout<<"\n\t\tCurrent Details are\n";
+                        SetColor(11);
+                        cout << "\n\t\tCurrent Details are\n";
                         amt.show();
-                        cout<<"\n\n\t\tEnter New Details\n";
+                        cout << "\n\n\t\tEnter New Details\n";
                         amt.add();
-                        cout<<"\n\t\tItem Details editted";
+                        cout << "\n\t\tItem Details editted";
+
                     }
                 }
                 r++;
             }
-            if(flag==0)
+            if (flag == 0)
             {
-                 SetColor(11);
-                cout<<"\n\t\tItem No does not exist...Please Retry!";
+                SetColor(11);
+                cout << "\n\t\tItem No does not exist...Please Retry!";
                 getch();
                 goto db;
             }
@@ -352,114 +366,119 @@ db:
             goto db;
 
         case 3:
-            flag=0;
-             SetColor(11);
-            cout<<"\n\n\tEnter Item ID to be Removed :";
-            cin>>ino;
-            fin.open("itemstore.dat",ios::binary);
-            if(!fin)
+            flag = 0;
+            SetColor(11);
+            cout << "\n\n\tEnter Item ID to be Removed :";
+            cin >> ino;
+            fin.open("itemstore.dat", ios::binary);
+            if (!fin)
             {
-                cout<<"\n\nFile Not Found...";
+                cout << "\n\nFile Not Found...";
                 goto menu;
             }
-//fstream tmp("temp.dat",ios::binary|ios::out);
+            //fstream tmp("temp.dat",ios::binary|ios::out);
             fin.seekg(0);
-            while(fin.read((char*)&amt, sizeof(amt)))
+            while (fin.read((char*)&amt, sizeof(amt)))
             {
-                int x=amt.item::retno();
-                if(x!=ino)
-                    tmp.write((char*)&amt,sizeof(amt));
+                int x = amt.item::retno();
+                if (x != ino)
+                    tmp.write((char*)&amt, sizeof(amt));
                 else
                 {
-                    flag=1;
+                    flag = 1;
                 }
             }
             fin.close();
             tmp.close();
-            fout.open("itemstore.dat",ios::trunc|ios::binary);
+            fout.open("itemstore.dat", ios::trunc | ios::binary);
             fout.seekp(0);
-            tmp.open("temp.dat",ios::binary|ios::in);
-            if(!tmp)
+            tmp.open("temp.dat", ios::binary | ios::in);
+            if (!tmp)
             {
-                cout<<"Error in File";
+                cout << "Error in File";
                 goto db;
             }
-            while(tmp.read((char*)&amt,sizeof(amt)))
-                fout.write((char*)&amt,sizeof(amt));
+            while (tmp.read((char*)&amt, sizeof(amt)))
+                fout.write((char*)&amt, sizeof(amt));
             tmp.close();
             fout.close();
-            if(flag==1){
-             SetColor(11);
-                cout<<"\n\t\tItem Succesfully Removed";}
-            else if (flag==0){
-             SetColor(12);
-                cout<<"\n\t\tItem does not Exist! Please Retry";}
+            if (flag == 1) {
+                SetColor(11);
+                cout << "\n\t\tItem Succesfully Removed";
+            }
+            else if (flag == 0) {
+                SetColor(12);
+                cout << "\n\t\tItem does not Exist! Please Retry";
+            }
             getch();
             goto db;
         case 4:
             goto menu;
         default:
-         SetColor(12);
-            cout<<"\n\n\t\tWrong Choice!!! Retry";
+            SetColor(12);
+            cout << "\n\n\t\tWrong Choice!!! Retry";
             getch();
             goto db;
         }
     case 3:
         system("cls");
-        flag=0;
+        flag = 0;
         int ino;
-         SetColor(11);
-        cout<<"\n\n\t\tEnter Item ID :";
-        cin>>ino;
-        fin.open("itemstore.dat",ios::binary);
-        if(!fin)
+        SetColor(11);
+        cout << "\n\n\t\tEnter Item ID :";
+        cin >> ino;
+        fin.open("itemstore.dat", ios::binary);
+        if (!fin)
         {
-             SetColor(12);
-            cout<<"\n\nFile Not Found...\nProgram Terminated!";
+            SetColor(12);
+            cout << "\n\nFile Not Found...\nProgram Terminated!";
             goto menu;
         }
         fin.seekg(0);
-        while(fin.read((char*)&amt,sizeof(amt)))
+        while (fin.read((char*)&amt, sizeof(amt)))
         {
-            int x=amt.item::retno();
-            if(x==ino)
+            int x = amt.item::retno();
+            if (x == ino)
             {
                 amt.pay();
-                flag=1;
+                flag = 1;
                 break;
             }
         }
-        if(flag==0)
-         SetColor(12);
-            cout<<"\n\t\tItem does not exist....Please Retry!";
+        if (flag == 0)
+            SetColor(12);
+        cout << "\n\t\tItem does not exist....Please Retry!";
         getch();
         fin.close();
         goto menu;
     case 4:
         system("cls");
-        gotoxy(20,20);
-         SetColor(11);
-        cout<<"ARE YOU SURE, YOU WANT TO EXIT (Y/N)?";
+        gotoxy(20, 20);
+        SetColor(11);
+        cout << "ARE YOU SURE, YOU WANT TO EXIT (Y/N)?";
         char yn;
-        cin>>yn;
-        if((yn=='Y')||(yn=='y'))
+        cin >> yn;
+        if ((yn == 'Y') || (yn == 'y'))
         {
-            gotoxy(12,20);
+            gotoxy(12, 20);
             system("cls");
-             SetColor(10);
-            cout<<"************************** THANKS FOR SHOPPING **************************************";
+            SetColor(10);
+            cout << "************************** THANKS FOR SHOPPING WITH US **************************************\n\n";
+            cout << "**************************     HAVE A GREAT DAY !      **************************************";
+            cout<<"\n";
+            footer();
             getch();
             exit(0);
         }
-        else if((yn=='N')||(yn=='n'))
+        else if ((yn == 'N') || (yn == 'n'))
             goto menu;
         else
         {
             goto menu;
         }
     default:
-     SetColor(8);
-        cout<<"\n\n\t\tWrong Choice....Please Retry!";
+        SetColor(8);
+        cout << "\n\n\t\tWrong Choice....Please Retry!";
         getch();
         goto menu;
     }
